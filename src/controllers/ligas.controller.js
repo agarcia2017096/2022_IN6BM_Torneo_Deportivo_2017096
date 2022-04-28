@@ -1,8 +1,6 @@
 //ALEJANDRO JAVIER GARCIA GARCIA -2017096 - PE6BM2
 
 const Ligas = require('../models/ligas.model');
-const bcrypt = require('bcrypt-nodejs');
-const jwt = require('../services/jwt');
 
 //El administrador puede registrar, editar y eliminar ligas.
 /* | | | | | | | | | | | | | | | | | | | | | LIGAS CRUD - OPCIONES DE ADMINISTRADOR| | | | | | | | | | | | | | | | | | | | |*/
@@ -53,7 +51,7 @@ function EditarLigas(req, res) {
                             if (err) return res.status(500).send({ mensaje: 'Error en la peticion'});
                             if(!ligaActualizada) return res.status(404).send( { mensaje: 'Error al editar la liga'});
                     
-                            return res.status(200).send({mensaje:"EDICIÓN DE LIGA EXITOSA (ADMINISTRADOR)", empresa: ligaActualizada});
+                            return res.status(200).send({mensaje:"EDICIÓN DE LIGA EXITOSA (ADMINISTRADOR)", liga: ligaActualizada});
                         });                        
 
                     } else {
@@ -131,18 +129,18 @@ function EliminarLigas(req, res){
                     if(err) return res.status(500).send({mensaje: "Error, la liga no existe"});
                     if(!ligaELiminada) return res.status(404).send({mensaje: "Error, liga liga no existe"})
             
-                    return  res.status(200).send({mensaje:"ELIMINACION EXITOSA (USUARIO)",liga:ligaELiminada});
+                    return  res.status(200).send({mensaje:"ELIMINACIÓN EXITOSA (USUARIO)",liga:ligaELiminada});
                 })
             }else{
                 return res.status(500).send({ mensaje: 'No puede eliminar la liga de otros usuarios'});
             }
-            //ELIMINACION DEL ADMINITRADOR
+            //ELIMINACIÓN DEL ADMINITRADOR
         }else{
             Ligas.findByIdAndDelete({_id:idLig},(err,ligaELiminada)=>{
                 if(err) return res.status(500).send({mensaje: "Error, la liga no existe"});
                 if(!ligaELiminada) return res.status(404).send({mensaje: "Error, la liga  no existe"})
         
-                return  res.status(200).send({mensaje:"ELIMINACION EXITOSA (ADMINISTRADOR)",liga:ligaELiminada});
+                return  res.status(200).send({mensaje:"ELIMINACIÓN EXITOSA (ADMINISTRADOR)",liga:ligaELiminada});
             })
         }
      })

@@ -8,7 +8,7 @@ var app = express();
 // IMPORTACIONES RUTAS
 const UsuariosRutas = require('./src/rutes/usuarios.rutes');
 const LigasRutas = require('./src/rutes/ligas.rutes');
-const EmpleadosRutas = require('./src/rutes/ligas.rutes');
+const EquiposRutas = require('./src/rutes/equipos.rutes');
 
 
 
@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cors());
 
 // CARGA DE RUTAS localhost:3000/api/obtenerProductos
-app.use('/api', LigasRutas,UsuariosRutas,EmpleadosRutas);
+app.use('/api', LigasRutas,UsuariosRutas,EquiposRutas);
 
 
 module.exports = app;
