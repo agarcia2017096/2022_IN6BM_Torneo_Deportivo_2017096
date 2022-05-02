@@ -9,6 +9,7 @@ var app = express();
 const UsuariosRutas = require('./src/rutes/usuarios.rutes');
 const LigasRutas = require('./src/rutes/ligas.rutes');
 const EquiposRutas = require('./src/rutes/equipos.rutes');
+const JornadasRutas = require('./src/rutes/jornadas.rutes');
 
 
 
@@ -20,7 +21,7 @@ app.use(express.json());
 app.use(cors());
 
 // CARGA DE RUTAS localhost:3000/api/obtenerProductos
-app.use('/api', LigasRutas,UsuariosRutas,EquiposRutas);
+app.use('/api', LigasRutas,UsuariosRutas,EquiposRutas,JornadasRutas);
 
 
 module.exports = app;

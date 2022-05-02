@@ -30,7 +30,16 @@ function RegistrarEquipos(req, res) {
                                 equiposModel.entrenador = parametros.entrenador;
                                 equiposModel.idLiga = ligaEncontrada._id;
                                 equiposModel.idUsuario = req.user.sub;
-        
+
+                                equiposModel.partidosJugados = 0;
+                                equiposModel.partidosGanados = 0;
+                                equiposModel.partidosEmpatados = 0;
+                                equiposModel.partidosPerdidos = 0;
+                                equiposModel.golesFavor = 0;
+                                equiposModel.golesContra = 0;
+                                equiposModel.diferenciaGoles = 0;
+                                equiposModel.puntos = 0;
+
                                 equiposModel.save((err, equipoGuardado) => {
                                     if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
                                     if(!equipoGuardado) return res.status(500).send({ mensaje: 'Error al agregar el equipo'});
@@ -67,6 +76,12 @@ function EditarEquipos(req, res) {
 
     var idEqui = req.params.idEquipo;
     var parametros = req.body;
+
+    if(parametros.partidosJugados || parametros.partidosGanados ||parametros.partidosEmpatados || parametros.partidosPerdidos ||
+        parametros.golesFavor || parametros.golesContra || parametros.diferenciaGoles || parametros.puntos ||
+        parametros.partidosJugados=="" || parametros.partidosGanados=="" ||parametros.partidosEmpatados=="" || parametros.partidosPerdidos=="" ||
+        parametros.golesFavor=="" || parametros.golesContra=="" || parametros.diferenciaGoles=="" || parametros.puntos==""
+         ) return res.status(500).send({ mensaje:'No puede editar estos campos'})
 
     Equipos.findOne({_id:idEqui,idUsuario:req.user.sub}, (err,equipoEncontrado)=>{
         if(err||!equipoEncontrado)return res.status(500).send( { mensaje: 'El equipo no pertenece al usuario logueado. Verifique el ID'});

@@ -6,6 +6,16 @@ var Schema = mongoose.Schema;
 var EquiposSchema = Schema({
     nombreEquipo: String,
     entrenador: String,
+
+    partidosJugados: Number,
+    partidosGanados: Number,
+    partidosEmpatados: Number,
+    partidosPerdidos: Number,
+    golesFavor: Number,
+    golesContra: Number,
+    diferenciaGoles: Number,
+    puntos: Number,
+    
     idLiga: { type: Schema.Types.ObjectId, ref: 'Ligas'},
     idUsuario: { type: Schema.Types.ObjectId, ref: 'Usuarios'}
 

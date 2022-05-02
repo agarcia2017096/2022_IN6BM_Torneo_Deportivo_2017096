@@ -6,8 +6,7 @@ var Schema = mongoose.Schema;
 var LigasSchema = Schema({
     nombreLiga: String,
     patrocinador:String,
-    idUsuario: { type: Schema.Types.ObjectId, ref: 'Usuarios'}
-
+    idUsuario: { type: Schema.Types.ObjectId, ref: 'Usuarios'},
 });
 
 module.exports = mongoose.model('Ligas',LigasSchema);
