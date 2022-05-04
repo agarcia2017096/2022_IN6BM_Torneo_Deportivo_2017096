@@ -22,3 +22,5 @@ var JornadasSchema = Schema({
 });
 
 module.exports = mongoose.model('Jornadas',JornadasSchema);
+
+
