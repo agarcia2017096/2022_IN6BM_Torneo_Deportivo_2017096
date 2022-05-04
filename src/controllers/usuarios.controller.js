@@ -64,8 +64,8 @@ function RegistrarAdmin(req, res) {
             usuarioModel.rol = 'ROL_ADMINISTRADOR';
             usuarioModel.imagen = null;
 
-            Usuarios.find({ email : parametros.email }, (err, alumnoEncontrado) => {
-                if ( alumnoEncontrado.length == 0 ) {
+            Usuarios.find({ email : parametros.email }, (err, userEncontrado) => {
+                if ( userEncontrado.length == 0 ) {
 
                     bcrypt.hash(parametros.password, null, null, (err, passwordEncriptada) => {
                         usuarioModel.password = passwordEncriptada;
@@ -132,16 +132,26 @@ function RegistrarAdmin(req, res) {
 
 //********************************* BUSCAR ********************************* */
 //BUSCAR TODO LOS USUARIOS
+
+
 function ObtenerUsuarios (req, res) {
-    console.log(req.user.sub)
+
     if(req.user.rol=="ROL_USUARIO"){
         return res.status(500).send({ mensaje: 'No es posible visualizar los usuarios existentes. Solamente el ADMINISTRADOR puede hacerlo'});
     }
+
     Usuarios.find((err,usuariosObtenidos)=>{
+
+        for(let i=0; i <usuariosObtenidos.length;i++){
+            usuariosObtenidos[i].password = undefined
+            console.log(usuariosObtenidos[i].nombre)
+        }
+
+
         if(err||!usuariosObtenidos) return res.status(500).send({mensaje: "No existen usuarios"});
 
 
-        return res.send({mensaje:"USUARIO ACTUALES",usuarios: usuariosObtenidos})
+        return res.send({mensaje:"USUARIO ACTUALES",informacion:"CANTIDAD DE USUARIOS ACTUALES: "+usuariosObtenidos.length,usuarios: usuariosObtenidos})
     })
 }
 
@@ -160,8 +170,8 @@ function RegistrarUsuario(req, res) {
             usuarioModel.rol = 'ROL_USUARIO';
             usuarioModel.imagen = null;
 
-            Usuarios.find({ email : parametros.email }, (err, alumnoEncontrado) => {
-                if ( alumnoEncontrado.length == 0 ) {
+            Usuarios.find({ email : parametros.email }, (err, uderEncontrado) => {
+                if ( uderEncontrado.length == 0 ) {
 
                     bcrypt.hash(parametros.password, null, null, (err, passwordEncriptada) => {
                         usuarioModel.password = passwordEncriptada;

@@ -23,6 +23,8 @@ api.get('/obtenerEquiposLiga/:idLiga',md_autentificacion.Auth,equiposController.
 //ELIMINAR EQUIPOS
 api.delete('/eliminarEquipos/:idEquipo',md_autentificacion.Auth,equiposController.EliminarEquipos)
 
+//OBTENER EQUIPOS DE LA LIGA
+api.get('/tablaLiga/:idLiga',md_autentificacion.Auth,equiposController.TablaLiga)
 
 /*
 //ELIMINAR EQUIPOS

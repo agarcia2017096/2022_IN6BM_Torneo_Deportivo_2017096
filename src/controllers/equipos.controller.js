@@ -6,8 +6,6 @@ const Equipos = require('../models/equipos.model');
 /* | | | | | | | | | | | | | | | | | | | | | EQUIPOS CRUD - OPCIONES DE USUARIO| | | | | | | | | | | | | | | | | | | | |*/
 //*************************** REGISTRAR EQUIPOS *************************** */
 function RegistrarEquipos(req, res) {
-    if ( req.user.rol != "ROL_USUARIO" ) return res.status(500)
-    .send({ mensaje: 'No tiene acceso a registar Equipos. Únicamente el Usuario puede hacerlo.'});
 
     var parametros = req.body;
 
@@ -71,8 +69,6 @@ function RegistrarEquipos(req, res) {
 
 //****************************. EDITAR EQUIPOS ******************************* */
 function EditarEquipos(req, res) {
-    if ( req.user.rol != "ROL_USUARIO" ) return res.status(500)
-    .send({ mensaje: 'No tiene acceso a editar Equipos. Únicamente el Usuario puede hacerlo.'});
 
     var idEqui = req.params.idEquipo;
     var parametros = req.body;
@@ -165,11 +161,20 @@ function EditarEquipos(req, res) {
 
 //*********************************  BUSCAR TODAS LOS EQUIPOS ********************************* */
 function ObtenerEquiposCreados(req, res) {
-    if ( req.user.rol != "ROL_USUARIO" ) return res.status(500)
-    .send({ mensaje: 'No tiene acceso a visualizar Equipos. Únicamente el Usuario puede hacerlo.'});
 
 
         Equipos.find({idUsuario:req.user.sub}, (err, equiposUsuario) => {
+            for(let i=0; i <equiposUsuario.length;i++){
+                equiposUsuario[i].partidosJugados = undefined
+                equiposUsuario[i].partidosGanados = undefined
+                equiposUsuario[i].partidosEmpatados = undefined
+                equiposUsuario[i].partidosPerdidos = undefined
+                equiposUsuario[i].golesFavor = undefined
+                equiposUsuario[i].golesContra = undefined
+                equiposUsuario[i].diferenciaGoles = undefined
+                equiposUsuario[i].puntos = undefined
+
+            }
             if(err) return res.status(500).send({ mensaje: "Error en la peticion" });
             if(!equiposUsuario) return res.status(500).send({ mensaje: "No existen equipos creados por el usuario."});
             return res.status(200).send({mensaje:"TODOS LOS EQUIPOS ACTUALES DEL USUARIO: "+req.user.nombre,informacion:"CANTIDAD DE EQUIPOS: "+equiposUsuario.length, equipos: equiposUsuario });
@@ -179,13 +184,22 @@ function ObtenerEquiposCreados(req, res) {
 //*********************************  BUSCAR EQUIPOS POR LIGAS********************************* */
 function ObtenerEquiposLigas(req, res) {
     idLig = req.params.idLiga
-    if ( req.user.rol != "ROL_USUARIO" ) return res.status(500)
-    .send({ mensaje: 'No tiene acceso a visualizar Equipos. Únicamente el Usuario puede hacerlo.'});
 
     Ligas.findOne({_id:idLig,idUsuario:req.user.sub},(err,ligaEncontradaUser)=>{
         if(err||!ligaEncontradaUser) return res.status(500).send({ mensaje: "La liga no fue creada por su usuario. No puede visualizar los equipos. Verifique el ID."});
 
         Equipos.find({idUsuario:req.user.sub,idLiga:ligaEncontradaUser._id}, (err, equiposUsuario) => {
+            for(let i=0; i <equiposUsuario.length;i++){
+                equiposUsuario[i].partidosJugados = undefined
+                equiposUsuario[i].partidosGanados = undefined
+                equiposUsuario[i].partidosEmpatados = undefined
+                equiposUsuario[i].partidosPerdidos = undefined
+                equiposUsuario[i].golesFavor = undefined
+                equiposUsuario[i].golesContra = undefined
+                equiposUsuario[i].diferenciaGoles = undefined
+                equiposUsuario[i].puntos = undefined
+
+            }
             if(err) return res.status(500).send({ mensaje: "Error en la peticion" });
             if(equiposUsuario.length==0) return res.status(500).send({mensaje:"EQUIPOS DE LA LIGA: "+ ligaEncontradaUser.nombreLiga, informacion: "Actualmente no existen equipos en esta liga."});
             return res.status(200).send({mensaje:"EQUIPOS DE LA LIGA: "+ ligaEncontradaUser.nombreLiga,informacion:"CANTIDAD DE EQUIPOS: "+equiposUsuario.length, equipos: equiposUsuario });
@@ -195,11 +209,28 @@ function ObtenerEquiposLigas(req, res) {
 
 }
 
+//*********************************  BUSCAR EQUIPOS POR LIGAS********************************* */
+function TablaLiga(req, res) {
+    idLig = req.params.idLiga
+
+    Ligas.findOne({_id:idLig,idUsuario:req.user.sub},(err,ligaEncontradaUser)=>{
+        if(err||!ligaEncontradaUser) return res.status(500).send({ mensaje: "La liga no fue creada por su usuario. No puede visualizar los equipos. Verifique el ID."});
+
+        Equipos.find({idUsuario:req.user.sub,idLiga:ligaEncontradaUser._id}, (err, equiposUsuario) => {
+            if(err) return res.status(500).send({ mensaje: "Error en la peticion" });
+            if(equiposUsuario.length==0) return res.status(500).send({mensaje:"EQUIPOS DE LA LIGA: "+ ligaEncontradaUser.nombreLiga, informacion: "Actualmente no existen equipos en esta liga."});
+            return res.status(200).send({mensaje:"EQUIPOS DE LA LIGA: "+ ligaEncontradaUser.nombreLiga,informacion:"CANTIDAD DE EQUIPOS: "+equiposUsuario.length, equipos: equiposUsuario });
+       
+        }).sort({  puntos:-1,diferenciaGoles:-1}) //.populate('idUsuario', 'nombre apellido').populate('idLiga', 'nombreLiga')
+
+    })
+    
+
+}
+
 //********************************* ELIMINAR LIGA ********************************* */
 function EliminarEquipos(req, res){
 
-    if ( req.user.rol == "ROL_ADMINISTRADOR" ) return res.status(500)
-    .send({ mensaje: 'No tiene acceso a eliminar Equipos. Únicamente el Usuario puede hacerlo.'});
 
     const idEqui = req.params.idEquipo;
 
@@ -224,6 +255,7 @@ module.exports ={
     EditarEquipos,
     ObtenerEquiposLigas,
     ObtenerEquiposCreados,
-    EliminarEquipos
+    EliminarEquipos,
+    TablaLiga
 
 }

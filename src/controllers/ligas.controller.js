@@ -102,13 +102,13 @@ function ObtenerLigas(req, res) {
         Ligas.find({idEmpresa:req.user.sub}, (err, ligasEncontradas) => {
             if(err) return res.status(500).send({ mensaje: "Error en la peticion" });
             if(!ligasEncontradas) return res.status(500).send({ mensaje: "No existen ligas creadas por el administrador."});
-            return res.status(200).send({mensaje:"LIGAS ACTUALES", ligas: ligasEncontradas });
+            return res.status(200).send({mensaje:"LIGAS ACTUALES", informacion:"CANTIDA DE LIGAS: "+ligasEncontradas.length, ligas: ligasEncontradas });
         })
     }else{//Obtener Ligas de Usuarios
         Ligas.find({idUsuario:req.user.sub}, (err, ligasUsuario) => {
             if(err) return res.status(500).send({ mensaje: "Error en la peticion" });
             if(!ligasUsuario) return res.status(500).send({ mensaje: "No existen ligas creadas por el usuario."});
-            return res.status(200).send({mensaje:"LIGAS ACTUALES DEL USUARIO", ligas: ligasUsuario });
+            return res.status(200).send({mensaje:"LIGAS ACTUALES DEL USUARIO", informacion:"CANTIDA DE LIGAS DEL USUARIO: "+ligasUsuario.length, ligas: ligasUsuario });
         })
     }
 }

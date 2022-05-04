@@ -7,16 +7,14 @@ const Empleados = require("../models/empleados.model");
 const imagen = "./src/generarPDF/images/LCS KINAL.png"
 
 
-function empresasPDF(req, res){
-  if ( req.user.rol == "ROL_ADMINISTRADOR" ) return res.status(500)
-  .send({ mensaje: 'No tiene acceso a generar PDF de empresas. Únicamente el cada empresa puede hacerlo'});
+function TablaLigaPDF(idLiga,req, res){
 
 
-  Empresas.findOne({_id:req.user.sub},(err,nombreIdEncontrado)=>{
+  Ligas.findOne({_id:idLiga},(err,ligaEncontrada)=>{
     Empresas.find({_id:req.user.sub },(err, empresaEncontrada)=>{
       if(err) return res.status(500).send({ error: `Error en la peticion ${err}`})
       if(empresaEncontrada !== null){
-          var nombreDoc=nombreIdEncontrado.nombreEmpresa;
+          var nombreDoc=ligaEncontrada.nombreEmpresa;
 
           // DIRECCIONAMIENTO
           var path = "./src/docPDF/"+nombreDoc+".pdf";
@@ -236,5 +234,5 @@ function fechaDocumento(date) {
 }
 
 module.exports = {
-  empresasPDF
+  empresasPDF: TablaLigaPDF
 };
