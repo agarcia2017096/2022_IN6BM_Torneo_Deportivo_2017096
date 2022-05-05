@@ -26,24 +26,4 @@ api.delete('/eliminarEquipos/:idEquipo',md_autentificacion.Auth,equiposControlle
 //OBTENER EQUIPOS DE LA LIGA
 api.get('/tablaLiga/:idLiga',md_autentificacion.Auth,equiposController.TablaLiga)
 
-/*
-//ELIMINAR EQUIPOS
-api.delete('/eliminarEmpleados/:idEmpleado',md_autentificacion.Auth,equiposController.EliminarEmpleados)
-
-//OBTENER LA CATIDAD DE EQUIPOS POR EMPRESA
-api.get('/empleadosActualesCantidad',md_autentificacion.Auth,equiposController.CantidadEmpleadosActuales)
-
-//BUSQUEDA DE EQUIPOS
-//BUSCAR POR ID
-api.get('/empleadosId/:idEmpleado',md_autentificacion.Auth, equiposController.ObtenerUsuarioID)
-//BUSCAR POR NOMBRE
-api.get('/empleadosNombre/:nombreEmpleado',md_autentificacion.Auth,equiposController.ObtenerNombreEmpleados)
-//BUSCAR POR PUESTO
-api.get('/empleadosPuesto/:puestoEmpleado',md_autentificacion.Auth,equiposController.ObtenerPuestoEmpleados)
-//BUSCAR POR DEPARTAMENTO
-api.get('/empleadosDepartamento/:departamentoEmpleado',md_autentificacion.Auth,equiposController.ObtenerDepartamentoEmpleados)
-//BUSCAR TODOS LOS EQUIPOS
-api.get('/empleradosActualesTodos',md_autentificacion.Auth,equiposController.ObtenerTodosEmpleados)
-
-*/
 module.exports = api

@@ -2,42 +2,47 @@
 
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
-const Empresas = require("../models/empresas.model");
-const Empleados = require("../models/empleados.model");
+const Ligas = require("../models/ligas.model");
+const Equipos = require("../models/equipos.model");
 const imagen = "./src/generarPDF/images/LCS KINAL.png"
 
 
-function TablaLigaPDF(idLiga,req, res){
+function TablaLigaPDF(req, res){
+  var idLig = req.params.idLiga
 
 
-  Ligas.findOne({_id:idLiga},(err,ligaEncontrada)=>{
-    Empresas.find({_id:req.user.sub },(err, empresaEncontrada)=>{
-      if(err) return res.status(500).send({ error: `Error en la peticion ${err}`})
-      if(empresaEncontrada !== null){
-          var nombreDoc=ligaEncontrada.nombreEmpresa;
+  Ligas.find({_id:idLig,idUsuario: req.user.sub},(err,ligaEncontrada)=>{
+    if(ligaEncontrada.length==0) return res.status(500).send({ error: `La liga ingresada no existe dentro de su registro de usuario. Verifique el ID.`})
 
-          // DIRECCIONAMIENTO
-          var path = "./src/docPDF/"+nombreDoc+".pdf";
-          Empleados.find({idEmpresa: req.user.sub},(err, empleadosEncontrados)=>{
-            if(err) return res.status(500).send({ error: `Error en la peticion ${err}`})
-            if(empleadosEncontrados === null) return res.status(404)
-            .send({error: `Error al entrar al empleado`})
+    Equipos.find({idLiga:idLig,idUsuario: req.user.sub },(err, equiposLiga)=>{
+
+      if(equiposLiga.length==0) return res.status(500).send({ error: `No existen equipos en la liga. Agregue equipos a la liga y gestiones las jornadas para generar el PDF.`})
+
+      if(equiposLiga.length !== 0){
+
+          Ligas.findOne({_id:idLig,idUsuario: req.user.sub},(err,nombreDocumento)=>{
+
+            var nombreDoc=nombreDocumento.nombreLiga;
+
+            // DIRECCIONAMIENTO
+            var path = "./src/docPDF/"+nombreDocumento.nombreLiga+".pdf";
             
-            estructuraDocumento(empresaEncontrada,empleadosEncontrados, path);
-            return res.status(200).send({empresa: "El PDf de la empresa "+ nombreDoc +" se ha creado exitosamente"})
+            estructuraDocumento(ligaEncontrada,equiposLiga, path);
+            return res.status(200).send({liga: "El PDf de "+ nombreDoc +" se ha creado exitosamente"})
           })
+
+
       }
-    })
+    }).sort({  puntos:-1,diferenciaGoles:-1})
   })
 
 }
 
-
-function estructuraDocumento(empresa,empleados, path) {
+function estructuraDocumento(liga,equipos, path) {
   let doc = new PDFDocument({ size: "A4", margin: 20 });
-  cabeceraDocumento(doc,empresa);
-  informacionEmpresa(doc, empresa);
-  encabezadoTabla(doc, empleados);
+  cabeceraDocumento(doc,liga);
+  informacionLiga(doc, liga);
+  encabezadoTabla(doc, equipos);
   generateFooter(doc);
 
   doc.end();
@@ -45,16 +50,16 @@ function estructuraDocumento(empresa,empleados, path) {
 }
 
 
-function cabeceraDocumento(doc,empresa) {
-  empresa.forEach(element=>{
+function cabeceraDocumento(doc,liga) {
+  liga.forEach(element=>{
     doc
     .image("./src/generarPDF/images/FondoDocumentoPDF.png",2,2, { width: 591,height: 837, align: "center"})
-     .image(imagen, 70, 45, { width: 60 })
+     .image(imagen, 50, 45, { width: 60 })
     .fillColor("#212F3C")
     .fontSize(9)
     .font('Helvetica-BoldOblique')
     .text(fechaDocumento(new Date()), 220, 40, { align: "right" })
-    .text("Facturación Venta Online", 220, 90, { align: "right" })
+    .text("Torneo Deportivo", 220, 90, { align: "right" })
     .text("Alejandro García - 2017096", 220, 110, { align: "right" })
     .text(" PE6BM2", 220, 130, { align: "right" })
 
@@ -63,44 +68,40 @@ function cabeceraDocumento(doc,empresa) {
   })
 }
 
-function informacionEmpresa(doc, empresa) {
+function informacionLiga(doc, liga) {
   doc
     .fillColor("#B03A2E")
     .fontSize(34)
     .font('Courier-BoldOblique')
-    .text("Registro de", 22, 50,{ align: "center" })
-    .text("Empleados", 22, 95,{ align: "center" });
+    .text("Tabla de ", 30, 60,{ align: "center" })
+    .text("posiciones", 20, 105,{ align: "center" });
 
   separadorEmpresa(doc, 170);
 
-  empresa.forEach(element=>{
+  liga.forEach(element=>{
     doc
     .fillColor("#273746")
       .fontSize(10)
       .font("Helvetica-Bold")
-      .text("ID:", 70, 180)
+      .text("ID:", 80, 185)
       .font("Helvetica")
-      .text(element._id, 190, 180)
+      .text(element._id, 165, 185)
       .font("Helvetica-Bold")
-      .text("Empresa:", 70, 200)
+      .text("Liga:", 80, 210)
       .font("Helvetica")
-      .text(element.nombreEmpresa, 190, 200)
+      .text(element.nombreLiga, 165, 210)
       .font("Helvetica-Bold")
-      .text("Actividad económica:", 70, 220)
+      .text("Patrocinador:", 80, 235)
       .font("Helvetica")
-      .text(element.actividadEconomica, 190, 220)
-      .font("Helvetica-Bold")
-      .text("Email:", 70, 240)
-      .font("Helvetica")
-      .text(element.email,190,240)
-      .image("./src/generarPDF/images/IconoEMpresa.png", 475, 180, { width: 70, align: "right"})
+      .text(element.patrocinador, 165, 235)
+      .image("./src/generarPDF/images/logo.png", 460, 173, { width: 75, align: "right"})
       .moveDown();
   })
 
   separadorEmpresa(doc, 258);
 }
 
-function encabezadoTabla ( doc, empleados) {
+function encabezadoTabla ( doc, equipos) {
     let i;
     const invoiceTableTop = 300;
 
@@ -110,26 +111,30 @@ function encabezadoTabla ( doc, empleados) {
        filaRegistro(
       doc,
       invoiceTableTop,
-      "Nombre",
-      "Apellido",
-      "Email",
-      "Telefono",
-      "Departamento",
-      "Puesto"
+      "Nombre del equipo",
+      "PJ",
+      "G",
+      "E",
+      "P",
+      "GF",
+      "GC",
+      "DG",
+      "Pts",
+
       );
       separadorSubtitulos(doc, invoiceTableTop + 20);
     doc.font("Helvetica")
        .fontSize(10)
        .fillColor("black");
 
-       if(empleados.length == 0){
+       if(equipos.length == 0){
 
         for (i = 0; i < 1; i++) {
           const position = invoiceTableTop + (i + 1) * 30;
           filaRegistro(
             doc,
             position,
-            "*NOTA: No existen empleados en la empresa",
+            "*NOTA: No existen equipos en la empresa",
             "",
             "",
             ""
@@ -138,19 +143,23 @@ function encabezadoTabla ( doc, empleados) {
           separadorRegistros(doc, position + 30);
         } 
       }else{
-        for (i = 0; i < empleados.length; i++) {
-          const item = empleados[i];
+        for (i = 0; i < equipos.length; i++) {
+          console.log(equipos[i])
+          const item = equipos[i];
           const position = invoiceTableTop + (i + 1) * 50;
     
           filaRegistro(
             doc,
             position,
-            empleados[i].nombre,
-            empleados[i].apellido,
-            empleados[i].email,
-            empleados[i].telefono,
-            empleados[i].departamento,
-            empleados[i].puesto
+            item.nombreEquipo,
+            item.partidosJugados,
+            item.partidosGanados,
+            item.partidosEmpatados,
+            item.partidosPerdidos,
+            item.golesFavor,
+            item.golesContra,
+            item.diferenciaGoles,
+            item.puntos
           );
     
           separadorRegistros(doc, position + 30);
@@ -179,21 +188,29 @@ function generateFooter(doc) {
 function filaRegistro(
   doc,
   y,
-  nombre,
-  apellido,
-  email,
-  telefono,
-  departamento,
-  puesto
+  nombreEquipo,
+  partidosJugados,
+  partidosGanados,
+  partidosEmpatados,
+  partidosPerdidos,
+  golesFavor,
+  golesContra,
+  diferenciaGoles,
+  puntos,
 ) {
   doc
     .fontSize(10)
-    .text(nombre, 25, y)
-    .text(apellido, 95, y)
-    .text(email, 160, y)
-    .text(telefono, 315, y)
-    .text(departamento, 390, y)
-    .text(puesto, 506, y)
+    .text(nombreEquipo, 50, y)
+    .text(partidosJugados, 180, y)
+    .text(partidosGanados, 230, y)
+    .text(partidosEmpatados, 280, y)
+    .text(partidosPerdidos, 330, y)
+    .text(golesFavor, 380, y)
+    .text(golesContra, 430, y)
+    .text(diferenciaGoles, 480, y)
+    .text(puntos, 530, y)
+
+
 }
 
 function separadorEmpresa(doc, y) {
@@ -234,5 +251,5 @@ function fechaDocumento(date) {
 }
 
 module.exports = {
-  empresasPDF: TablaLigaPDF
+  TablaLigaPDF
 };

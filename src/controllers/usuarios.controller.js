@@ -1,13 +1,12 @@
 //ALEJANDRO JAVIER GARCIA GARCIA -2017096 - PE6BM2
 
 const Usuarios = require('../models/usuarios.model');
-const Empresas = require('../models/empresas.model');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
 
 //1. Al iniciar la aplicación se creará un usuario administrador con lo siguiente:
-//a. Usuario: Admin
-//b. UsuarioContraseña: 123456
+//a. Usuario: ADMIN
+//b. UsuarioContraseña: deportes123
 //3. El administrador puede logearse 
 
 /* | | | | | | | | | | | | | | | | | | | | | LOGIN DEL PROYECTO | | | | | | | | | | | | | | | | | | | | |*/

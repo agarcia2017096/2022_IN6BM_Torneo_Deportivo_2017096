@@ -4,9 +4,6 @@ const express = require('express');
 const ligasController = require('../controllers/ligas.controller')
 const md_autentificacion = require('../middlewares/autentication')
 const pdfController = require('../GenerarPDF/generarPDF')
-const excelController = require('../generarExcel/generarExcel')
-
-
 
 //RUTAS
 var api = express.Router();
@@ -24,13 +21,9 @@ api.get('/obtenerLigas', md_autentificacion.Auth, ligasController.ObtenerLigas);
 //ELIMINAR LIGAS
 api.delete('/eliminarLigas/:idLiga', md_autentificacion.Auth, ligasController.EliminarLigas);
 
+//GENERACIÓN DE LA LIGA Y VERIFICACIÓN DE TOKEN
+api.get("/generaraPDF/:idLiga",md_autentificacion.Auth,pdfController.TablaLigaPDF)
 
 
-//GENERACIÓN DE PDF POR EMPRESA Y VERIFICACIÓN DE TOKEN
-api.get("/generaraPDF",md_autentificacion.Auth,pdfController.empresasPDF)
-
-
-//GENERACIÓN DE PDF POR EMPRESA Y VERIFICACIÓN DE TOKEN
-api.get("/generarExcel",md_autentificacion.Auth,excelController.BuscarDatos)
 
 module.exports = api
