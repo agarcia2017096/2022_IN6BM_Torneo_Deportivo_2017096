@@ -34,7 +34,7 @@ function RegistrarJornadas2(req, res) {
                     Equipos.find({idLiga:ligaEncontradaUser._id},(err,cantidadEquiposLiga)=>{
                         if(err||cantidadEquiposLiga.length==0) return res.status(500).send({mensaje:'*No existen equipos en la liga*', informacion:'Para gestionar los partidos de las jornadas debe agregar equipos.'})
 
-                        console.log('1.INFORMACION\n   CANTIDAD DE EQUIPOS EN LA LIGA:  '+ cantidadEquiposLiga.length)
+                        //console.log('1.INFORMACION\n   CANTIDAD DE EQUIPOS EN LA LIGA:  '+ cantidadEquiposLiga.length)
 
                         var equiposCant = parseInt(cantidadEquiposLiga.length)
 
@@ -45,14 +45,14 @@ function RegistrarJornadas2(req, res) {
                             var numeroJornadas = equiposCant-1
 
                             var partidosPar = (equiposCant/2)
-                            console.log('2. INFORMACIONPARTIDOS POR JORNADA* '+partidosPar)
-                            console.log('3. NUMERO TOTAL DE JORNADAS DISPONIBLES* '+numeroJornadas)
+                            //console.log('2. INFORMACIONPARTIDOS POR JORNADA* '+partidosPar)
+                            //console.log('3. NUMERO TOTAL DE JORNADAS DISPONIBLES* '+numeroJornadas)
 
                             Jornadas.find({idLiga:ligaEncontradaUser._id, idUsuario: req.user.sub},(err,existenciaJornada)=>{
 
                                 //PRIMERA JORADA// FULL VERIFICACIONES
                                 if(existenciaJornada.length==0){
-                                    console.log("*******************************************************************        PRIMERA JORNADA DE LA LIGA")
+                                    //console.log("*******************************************************************        PRIMERA JORNADA DE LA LIGA")
                                     if(parametros.local==parametros.visitante)  return res.status(500).send({ mensaje: 'El local y el visitante deben ser equipos diferentes' });
 
                                     Equipos.findOne({ nombreEquipo : parametros.local, idLiga:ligaEncontradaUser._id }, (err, localEncontrado) => {
@@ -83,7 +83,7 @@ function RegistrarJornadas2(req, res) {
                                             jornadasModel.save((err, nuevaJornada) => {
                                                 if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
                                                 if(!nuevaJornada) return res.status(500).send({ mensaje: 'Error al agregar la carrito'});
-                                                console.log(nuevaJornada._id)
+                                                //console.log(nuevaJornada._id)
                                                 
                                                 //MODIFICA EL ARRAY Y AGAREGA LA JORNADA
                                                 Jornadas.findByIdAndUpdate({_id:nuevaJornada._id},{ 
@@ -99,7 +99,7 @@ function RegistrarJornadas2(req, res) {
                             
                                                     (err, jornadaActualizada)=>{  
                                                         if(err) return res.status(500).send({ mensaje: "Error en la peticion de modificar jornada-"});
-                                                        console.log(err)
+                                                        //console.log(err)
                                                         if(!jornadaActualizada) return res.status(500).send({ mensaje: 'Error al modificar la informacion'});
                                 
                                                         //EQUIPO LOCAL GANA
@@ -198,7 +198,7 @@ function RegistrarJornadas2(req, res) {
                                                         
                                                                         Registros.find({idLiga:ligaEncontradaUser._id,idUsuario: req.user.sub},(err,resgistrosActuales)=>{
                                                                             if(err) return res.status(500).send({ message: "ERORR"})
-                                                                            console.log(resgistrosActuales.length)
+                                                                            //console.log(resgistrosActuales.length)
                                                         
                                                         
                                                                             if(registroEncontradoL==null && registroEncontradoL==null  || resgistrosActuales.length == 0){
@@ -240,7 +240,7 @@ function RegistrarJornadas2(req, res) {
                             
                                     })                                
                                 }else{//YA HAY JORNADAS 
-                                    console.log("************************************ HAY MAS JORNADA Y EMPIEZA A VERIFICAR *************************************")
+                                    //console.log("************************************ HAY MAS JORNADA Y EMPIEZA A VERIFICAR *************************************")
                                       
                                     Equipos.find({idLiga:ligaEncontradaUser._id},(err,cantidadEquiposLiga)=>{
                                         if(err||cantidadEquiposLiga.length==0) return res.status(500).send({mensaje:'*No existen equipos en la liga*', informacion:'Para gestionar los partidos de las jornadas debe agregar equipos.'})
@@ -251,12 +251,12 @@ function RegistrarJornadas2(req, res) {
                                             Jornadas.findOne({idUsuario:req.user.sub,idLiga:ligaEncontradaUser._id}, (err, jornadaEncontrada)=>{
                                                     //VERIFICA SI SE PUEDE AGREGAR MAS PARTIDOS EN LA JORNADA ANTERIOR
 
-                                                    console.log("3.     PARTIDOS DE LA JORNADA ANTERIOR "+jornadaEncontrada.informacion.length+' MAXIMO '+confirpartidosPar)
+                                                    //console.log("3.     PARTIDOS DE LA JORNADA ANTERIOR "+jornadaEncontrada.informacion.length+' MAXIMO '+confirpartidosPar)
                                                     //VERIFICA SI EN LA ANTERIO PUEDE AGREGAR
-                                                    console.log("66666666666666666666666666666666666666666666666666666666666"+jornadaEncontrada._id+ " cant de partidos"+jornadaEncontrada.informacion.length+" posibles" +confirpartidosPar)
+                                                    //console.log("66666666666666666666666666666666666666666666666666666666666"+jornadaEncontrada._id+ " cant de partidos"+jornadaEncontrada.informacion.length+" posibles" +confirpartidosPar)
                                                     if(jornadaEncontrada.informacion.length < confirpartidosPar){
 
-                                                        console.log("+++++++++++++++++++++ PUEDE AGREGAR M[AS PARTIDOS A LA ANTERIOR")
+                                                        //console.log("+++++++++++++++++++++ PUEDE AGREGAR M[AS PARTIDOS A LA ANTERIOR")
                                                         var repetir = false
 
                                                         // VERIFICA SI EL EQUIPO INGRESADO EXISTE
@@ -266,7 +266,7 @@ function RegistrarJornadas2(req, res) {
                                                                 //VERIFICACIONES DE PARAMETROS
                                                                 if ( localEncontrado == null) {  
                                                                     repetir = true
-                                                                    console.log("El local solamnete puede ser un equipo que usted haya creado. Verifique los datos****************************************************************************************************************")
+                                                                    //console.log("El local solamnete puede ser un equipo que usted haya creado. Verifique los datos****************************************************************************************************************")
                                                                     
                                                                     return res.status(500)
                                                                     
@@ -312,20 +312,20 @@ function RegistrarJornadas2(req, res) {
 
 
                                                                                         if(elLocalEnRegistroJornada.length != 0){
-                                                                                                        return res.status(500).send({mensaje:'-El local ya ha juagdo en esta jornada.',
+                                                                                                        return res.status(500).send({mensaje:'-El local ya ha jugado en esta jornada.',
                                                                                                         informacion:'Un equipo solamnete puede jugar una vez por jornada. -Verifique los datos-' }) 
                                                                                         } 
 
                                                                                         
                                                                                         if(elVisitanteEnRegistroJornada.length != 0){
-                                                                                            return res.status(500).send({mensaje:'-El visitante ya ha juagdo en esta jornada.',
+                                                                                            return res.status(500).send({mensaje:'-El visitante ya ha jugado en esta jornada.',
                                                                                             informacion:'Un equipo solamnete puede jugar una vez por jornada. -Verifique los datos-' }) 
                                                                                         } 
 
                                                                                         if(elLocalEnRegistroJornada.length==0&&elVisitanteEnRegistroJornada.length == 0){
-                                                                                            console.log("AGREGA A LA JORNADA MAS PARTIDOS")
+                                                                                            //console.log("AGREGA A LA JORNADA MAS PARTIDOS")
                                                                                                             //AGREGA EL PARTIDO
-                                                                                                            console.log(" Id a dond emodificar "+ jornadaEncontrada._id)
+                                                                                                            //console.log(" Id a dond emodificar "+ jornadaEncontrada._id)
                                                                                                             Jornadas.findByIdAndUpdate({_id:jornadaEncontrada._id},{ 
                                                                                                                 $push: {
                                                                                                                     informacion: [{
@@ -339,7 +339,7 @@ function RegistrarJornadas2(req, res) {
                                                                         
                                                                                                             (err, jornadaActualizadaAdd)=>{  
                                                                                                                 if(err) return res.status(500).send({ mensaje: "Error en la peticion de modificar jornada-"});
-                                                                                                                console.log(err)
+                                                                                                                //console.log(err)
                                                                                                                 if(!jornadaActualizadaAdd) return res.status(500).send({ mensaje: 'Error al modificar la informacion'});
                                                                                                 
                                                                                                                 //EQUIPO LOCAL GANA
@@ -468,13 +468,13 @@ function RegistrarJornadas2(req, res) {
                                                     }else{ //SI YA NO PUEDE AHGREGAR NE LA ANTERIO CREA UNA NUEVA JORNADA
                                                         //VERIFICA SI NO HA LLEGADO AL MAXIMO DE JORNADAS PERMITE AGREGAR
                                                         if( existenciaJornada.length < numeroJornadas){
-                                                            console.log("INFOMACION JORANDA \N  1. JORNADAS ACTUALES " +  existenciaJornada.length)
+                                                            //console.log("INFOMACION JORANDA \N  1. JORNADAS ACTUALES " +  existenciaJornada.length)
 
                                                             var partidosPar = (equiposCant/2)
-                                                            console.log("2.     PARTIDOS POR JORNADA " +  partidosPar)
-                                                            console.log("+++++++++++++++++++++JORNADA ANTERIOR LLENA / AGREGA UNA NUEVA JORNADA ++++++++++++++++++++++")
-                                                            console.log("JORNADAS ACTUALES " +  existenciaJornada.length)
-                                                            console.log("JORNADAS MÁXIMAS " +  numeroJornadas)
+                                                            //console.log("2.     PARTIDOS POR JORNADA " +  partidosPar)
+                                                            //console.log("+++++++++++++++++++++JORNADA ANTERIOR LLENA / AGREGA UNA NUEVA JORNADA ++++++++++++++++++++++")
+                                                            //console.log("JORNADAS ACTUALES " +  existenciaJornada.length)
+                                                            //console.log("JORNADAS MÁXIMAS " +  numeroJornadas)
 
                                                         //VERIFICA SI NO HA LLEGADO AL MAXIMO DE JORNADAS PERMITE AGREGAR
                                                             if( existenciaJornada.length < numeroJornadas){
@@ -489,7 +489,7 @@ function RegistrarJornadas2(req, res) {
                                                                         //VERIFICACIONES DE PARAMETROS
                                                                         if ( localEncontrado == null) {  
                                                                             repetir = true
-                                                                            console.log("El local solamnete puede ser un equipo que usted haya creado. Verifique los datos****************************************************************************************************************")
+                                                                            //console.log("El local solamnete puede ser un equipo que usted haya creado. Verifique los datos****************************************************************************************************************")
                                                                             
                                                                             return res.status(500)
                                                                             
@@ -522,7 +522,7 @@ function RegistrarJornadas2(req, res) {
 
                                                                                 }else{
 
-                                                                                                    console.log("AGREGA NUEVA JORNADA")
+                                                                                                    //console.log("AGREGA NUEVA JORNADA")
                                                                                                                     //AGREGA EL PARTIDO
 
                                                                                                                     var jornadasModel = new Jornadas();
@@ -532,7 +532,7 @@ function RegistrarJornadas2(req, res) {
                                                                                                                     jornadasModel.save((err, nuevaJornada) => {
                                                                                                                         if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
                                                                                                                         if(!nuevaJornada) return res.status(500).send({ mensaje: 'Error al agregar la carrito'});
-                                                                                                                        console.log(nuevaJornada._id)
+                                                                                                                        //console.log(nuevaJornada._id)
                                                                                                                         
                                                                                                                         //MODIFICA EL ARRAY Y AGAREGA LA JORNADA
                                                                                                                         Jornadas.findByIdAndUpdate({_id:nuevaJornada._id},{ 
@@ -548,7 +548,7 @@ function RegistrarJornadas2(req, res) {
                                                                                                     
                                                                                                                             (err, jornadaActualizada)=>{  
                                                                                                                                 if(err) return res.status(500).send({ mensaje: "Error en la peticion de modificar jornada-"});
-                                                                                                                                console.log(err)
+                                                                                                                                //console.log(err)
                                                                                                                                 if(!jornadaActualizada) return res.status(500).send({ mensaje: 'Error al modificar la informacion'});
                                                                                                         
                                                                                                                                 //EQUIPO LOCAL GANA
@@ -647,7 +647,7 @@ function RegistrarJornadas2(req, res) {
                                                                                                                                 
                                                                                                                                                 Registros.find({idLiga:ligaEncontradaUser._id,idUsuario: req.user.sub},(err,resgistrosActuales)=>{
                                                                                                                                                     if(err) return res.status(500).send({ message: "ERORR"})
-                                                                                                                                                    console.log(resgistrosActuales.length)
+                                                                                                                                                    //console.log(resgistrosActuales.length)
                                                                                                                                 
                                                                                                                                 
                                                                                                                                                     if(registroEncontradoL==null && registroEncontradoL==null  || resgistrosActuales.length == 0){
@@ -715,14 +715,14 @@ function RegistrarJornadas2(req, res) {
                             var numeroJornadasImpar = equiposCant
 
                             var partidosImpar = ((equiposCant-1)/2)
-                            console.log('2. INFORMACIONPARTIDOS POR JORNADA* '+partidosImpar)
-                            console.log('3. NUMERO TOTAL DE JORNADAS DISPONIBLES* '+numeroJornadasImpar)
+                            //console.log('2. INFORMACIONPARTIDOS POR JORNADA* '+partidosImpar)
+                            //console.log('3. NUMERO TOTAL DE JORNADAS DISPONIBLES* '+numeroJornadasImpar)
 
                             Jornadas.find({idLiga:ligaEncontradaUser._id, idUsuario: req.user.sub},(err,existenciaJornada)=>{
 
                                 //PRIMERA JORADA// FULL VERIFICACIONES
                                 if(existenciaJornada.length==0){
-                                    console.log("*******************************************************************        PRIMERA JORNADA DE LA LIGA")
+                                    //console.log("*******************************************************************        PRIMERA JORNADA DE LA LIGA")
                                     if(parametros.local==parametros.visitante)  return res.status(500).send({ mensaje: 'El local y el visitante deben ser equipos diferentes' });
 
                                     Equipos.findOne({ nombreEquipo : parametros.local, idLiga:ligaEncontradaUser._id }, (err, localEncontrado) => {
@@ -753,7 +753,7 @@ function RegistrarJornadas2(req, res) {
                                             jornadasModel.save((err, nuevaJornada) => {
                                                 if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
                                                 if(!nuevaJornada) return res.status(500).send({ mensaje: 'Error al agregar la carrito'});
-                                                console.log(nuevaJornada._id)
+                                                //console.log(nuevaJornada._id)
                                                 
                                                 //MODIFICA EL ARRAY Y AGAREGA LA JORNADA
                                                 Jornadas.findByIdAndUpdate({_id:nuevaJornada._id},{ 
@@ -769,7 +769,7 @@ function RegistrarJornadas2(req, res) {
                             
                                                     (err, jornadaActualizada)=>{  
                                                         if(err) return res.status(500).send({ mensaje: "Error en la peticion de modificar jornada-"});
-                                                        console.log(err)
+                                                        //console.log(err)
                                                         if(!jornadaActualizada) return res.status(500).send({ mensaje: 'Error al modificar la informacion'});
                                 
                                                         //EQUIPO LOCAL GANA
@@ -868,7 +868,7 @@ function RegistrarJornadas2(req, res) {
                                                         
                                                                         Registros.find({idLiga:ligaEncontradaUser._id,idUsuario: req.user.sub},(err,resgistrosActuales)=>{
                                                                             if(err) return res.status(500).send({ message: "ERORR"})
-                                                                            console.log(resgistrosActuales.length)
+                                                                            //console.log(resgistrosActuales.length)
                                                         
                                                         
                                                                             if(registroEncontradoL==null && registroEncontradoL==null  || resgistrosActuales.length == 0){
@@ -910,7 +910,7 @@ function RegistrarJornadas2(req, res) {
                             
                                     })                                
                                 }else{//YA HAY JORNADAS 
-                                    console.log("************************************ HAY MAS JORNADA Y EMPIEZA A VERIFICAR *************************************")
+                                    //console.log("************************************ HAY MAS JORNADA Y EMPIEZA A VERIFICAR *************************************")
                                       
                                     Equipos.find({idLiga:ligaEncontradaUser._id},(err,cantidadEquiposLiga)=>{
                                         if(err||cantidadEquiposLiga.length==0) return res.status(500).send({mensaje:'*No existen equipos en la liga*', informacion:'Para gestionar los partidos de las jornadas debe agregar equipos.'})
@@ -921,12 +921,12 @@ function RegistrarJornadas2(req, res) {
                                             Jornadas.findOne({idUsuario:req.user.sub,idLiga:ligaEncontradaUser._id}, (err, jornadaEncontrada)=>{
                                                     //VERIFICA SI SE PUEDE AGREGAR MAS PARTIDOS EN LA JORNADA ANTERIOR
 
-                                                    console.log("3.     PARTIDOS DE LA JORNADA ANTERIOR "+jornadaEncontrada.informacion.length+' MAXIMO '+confirpartidosImpar)
+                                                    //console.log("3.     PARTIDOS DE LA JORNADA ANTERIOR "+jornadaEncontrada.informacion.length+' MAXIMO '+confirpartidosImpar)
                                                     //VERIFICA SI EN LA ANTERIO PUEDE AGREGAR
-                                                    console.log("66666666666666666666666666666666666666666666666666666666666"+jornadaEncontrada._id+ " cant de partidos"+jornadaEncontrada.informacion.length+" posibles" +confirpartidosImpar)
+                                                    //console.log("66666666666666666666666666666666666666666666666666666666666"+jornadaEncontrada._id+ " cant de partidos"+jornadaEncontrada.informacion.length+" posibles" +confirpartidosImpar)
                                                     if(jornadaEncontrada.informacion.length < confirpartidosImpar){
 
-                                                        console.log("+++++++++++++++++++++ PUEDE AGREGAR M[AS PARTIDOS A LA ANTERIOR")
+                                                        //console.log("+++++++++++++++++++++ PUEDE AGREGAR M[AS PARTIDOS A LA ANTERIOR")
                                                         var repetir = false
 
                                                         // VERIFICA SI EL EQUIPO INGRESADO EXISTE
@@ -936,7 +936,7 @@ function RegistrarJornadas2(req, res) {
                                                                 //VERIFICACIONES DE PARAMETROS
                                                                 if ( localEncontrado == null) {  
                                                                     repetir = true
-                                                                    console.log("El local solamnete puede ser un equipo que usted haya creado. Verifique los datos****************************************************************************************************************")
+                                                                    //console.log("El local solamnete puede ser un equipo que usted haya creado. Verifique los datos****************************************************************************************************************")
                                                                     
                                                                     return res.status(500)
                                                                     
@@ -982,20 +982,20 @@ function RegistrarJornadas2(req, res) {
 
 
                                                                                         if(elLocalEnRegistroJornada.length != 0){
-                                                                                                        return res.status(500).send({mensaje:'-El local ya ha juagdo en esta jornada.',
+                                                                                                        return res.status(500).send({mensaje:'-El local ya ha jugado en esta jornada.',
                                                                                                         informacion:'Un equipo solamnete puede jugar una vez por jornada. -Verifique los datos-' }) 
                                                                                         } 
 
                                                                                         
                                                                                         if(elVisitanteEnRegistroJornada.length != 0){
-                                                                                            return res.status(500).send({mensaje:'-El visitante ya ha juagdo en esta jornada.',
+                                                                                            return res.status(500).send({mensaje:'-El visitante ya ha jugado en esta jornada.',
                                                                                             informacion:'Un equipo solamnete puede jugar una vez por jornada. -Verifique los datos-' }) 
                                                                                         } 
 
                                                                                         if(elLocalEnRegistroJornada.length==0&&elVisitanteEnRegistroJornada.length == 0){
-                                                                                            console.log("AGREGA A LA JORNADA MAS PARTIDOS")
+                                                                                            //console.log("AGREGA A LA JORNADA MAS PARTIDOS")
                                                                                                             //AGREGA EL PARTIDO
-                                                                                                            console.log(" Id a dond emodificar "+ jornadaEncontrada._id)
+                                                                                                            //console.log(" Id a dond emodificar "+ jornadaEncontrada._id)
                                                                                                             Jornadas.findByIdAndUpdate({_id:jornadaEncontrada._id},{ 
                                                                                                                 $push: {
                                                                                                                     informacion: [{
@@ -1009,7 +1009,7 @@ function RegistrarJornadas2(req, res) {
                                                                         
                                                                                                             (err, jornadaActualizadaAdd)=>{  
                                                                                                                 if(err) return res.status(500).send({ mensaje: "Error en la peticion de modificar jornada-"});
-                                                                                                                console.log(err)
+                                                                                                                //console.log(err)
                                                                                                                 if(!jornadaActualizadaAdd) return res.status(500).send({ mensaje: 'Error al modificar la informacion'});
                                                                                                 
                                                                                                                 //EQUIPO LOCAL GANA
@@ -1138,13 +1138,13 @@ function RegistrarJornadas2(req, res) {
                                                     }else{ //SI YA NO PUEDE AHGREGAR NE LA ANTERIO CREA UNA NUEVA JORNADA
                                                         //VERIFICA SI NO HA LLEGADO AL MAXIMO DE JORNADAS PERMITE AGREGAR
                                                         if( existenciaJornada.length < numeroJornadasImpar){
-                                                            console.log("INFOMACION JORANDA \N  1. JORNADAS ACTUALES " +  existenciaJornada.length)
+                                                            //console.log("INFOMACION JORANDA \N  1. JORNADAS ACTUALES " +  existenciaJornada.length)
 
                                                              confirpartidosImpar = ((equiposCantidad-1)/2)
-                                                            console.log("2.     PARTIDOS POR JORNADA " +  confirpartidosImpar)
-                                                            console.log("+++++++++++++++++++++JORNADA ANTERIOR LLENA / AGREGA UNA NUEVA JORNADA ++++++++++++++++++++++")
-                                                            console.log("JORNADAS ACTUALES " +  existenciaJornada.length)
-                                                            console.log("JORNADAS MÁXIMAS " +  numeroJornadasImpar)
+                                                            //console.log("2.     PARTIDOS POR JORNADA " +  confirpartidosImpar)
+                                                            //console.log("+++++++++++++++++++++JORNADA ANTERIOR LLENA / AGREGA UNA NUEVA JORNADA ++++++++++++++++++++++")
+                                                            //console.log("JORNADAS ACTUALES " +  existenciaJornada.length)
+                                                            //console.log("JORNADAS MÁXIMAS " +  numeroJornadasImpar)
 
                                                         //VERIFICA SI NO HA LLEGADO AL MAXIMO DE JORNADAS PERMITE AGREGAR
                                                             if( existenciaJornada.length < numeroJornadasImpar){
@@ -1159,7 +1159,7 @@ function RegistrarJornadas2(req, res) {
                                                                         //VERIFICACIONES DE PARAMETROS
                                                                         if ( localEncontrado == null) {  
                                                                             repetir = true
-                                                                            console.log("El local solamnete puede ser un equipo que usted haya creado. Verifique los datos****************************************************************************************************************")
+                                                                            //console.log("El local solamnete puede ser un equipo que usted haya creado. Verifique los datos****************************************************************************************************************")
                                                                             
                                                                             return res.status(500)
                                                                             
@@ -1192,7 +1192,7 @@ function RegistrarJornadas2(req, res) {
 
                                                                                 }else{
 
-                                                                                                    console.log("AGREGA NUEVA JORNADA")
+                                                                                                    //console.log("AGREGA NUEVA JORNADA")
                                                                                                                     //AGREGA EL PARTIDO
 
                                                                                                                     var jornadasModel = new Jornadas();
@@ -1202,7 +1202,7 @@ function RegistrarJornadas2(req, res) {
                                                                                                                     jornadasModel.save((err, nuevaJornada) => {
                                                                                                                         if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
                                                                                                                         if(!nuevaJornada) return res.status(500).send({ mensaje: 'Error al agregar la carrito'});
-                                                                                                                        console.log(nuevaJornada._id)
+                                                                                                                        //console.log(nuevaJornada._id)
                                                                                                                         
                                                                                                                         //MODIFICA EL ARRAY Y AGAREGA LA JORNADA
                                                                                                                         Jornadas.findByIdAndUpdate({_id:nuevaJornada._id},{ 
@@ -1218,7 +1218,7 @@ function RegistrarJornadas2(req, res) {
                                                                                                     
                                                                                                                             (err, jornadaActualizada)=>{  
                                                                                                                                 if(err) return res.status(500).send({ mensaje: "Error en la peticion de modificar jornada-"});
-                                                                                                                                console.log(err)
+                                                                                                                                //console.log(err)
                                                                                                                                 if(!jornadaActualizada) return res.status(500).send({ mensaje: 'Error al modificar la informacion'});
                                                                                                         
                                                                                                                                 //EQUIPO LOCAL GANA
@@ -1317,7 +1317,7 @@ function RegistrarJornadas2(req, res) {
                                                                                                                                 
                                                                                                                                                 Registros.find({idLiga:ligaEncontradaUser._id,idUsuario: req.user.sub},(err,resgistrosActuales)=>{
                                                                                                                                                     if(err) return res.status(500).send({ message: "ERORR"})
-                                                                                                                                                    console.log(resgistrosActuales.length)
+                                                                                                                                                    //console.log(resgistrosActuales.length)
                                                                                                                                 
                                                                                                                                 
                                                                                                                                                     if(registroEncontradoL==null && registroEncontradoL==null  || resgistrosActuales.length == 0){

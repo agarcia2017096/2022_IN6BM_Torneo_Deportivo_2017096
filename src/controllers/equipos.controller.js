@@ -21,7 +21,7 @@ function RegistrarEquipos(req, res) {
                     if ( equipoEncontrado == null) {
 
                         Equipos.find({idLiga:ligaEncontrada.id},(err,cantidadEquipos)=>{
-                            console.log("Existen>:"+ cantidadEquipos.length+" en la liga "+ ligaEncontrada.nombreLiga )
+                            //console.log("Existen>:"+ cantidadEquipos.length+" en la liga "+ ligaEncontrada.nombreLiga )
                             if(cantidadEquipos.length<10){
                                 var equiposModel = new Equipos();
                                 equiposModel.nombreEquipo = parametros.nombreEquipo;
@@ -82,7 +82,7 @@ function EditarEquipos(req, res) {
     Equipos.findOne({_id:idEqui,idUsuario:req.user.sub}, (err,equipoEncontrado)=>{
         if(err||!equipoEncontrado)return res.status(500).send( { mensaje: 'El equipo no pertenece al usuario logueado. Verifique el ID'});
        
-        console.log(equipoEncontrado.idLiga) //LIGA A LA QUE PERTENCE EL EQUIPO
+        //console.log(equipoEncontrado.idLiga) //LIGA A LA QUE PERTENCE EL EQUIPO
         
         //VERIFICA LAS LIGAS DEL USUARIO
         Ligas.find({_id: equipoEncontrado.idLiga,idUsuario:req.user.sub}, (err,ligasUsuario)=>{
@@ -90,20 +90,29 @@ function EditarEquipos(req, res) {
 
             if(parametros.nombreEquipo || parametros.entrenador || parametros.nombreEquipo!="" || parametros.entrenador!=""||parametros.nombreLiga|| parametros.nombreLiga!="") {
                 
-                if(parametros.nombreLiga){//SI DESEA CAMBIAR LA LIGA
 
                     Ligas.findOne({ nombreLiga : parametros.nombreLiga, idUsuario: req.user.sub}, (err, ligaEncontrada) => {
                         if ( ligaEncontrada != null) {
                             Equipos.find({idLiga:ligaEncontrada.id},(err,cantidadEquipos)=>{
-                                console.log("Existen>:"+ cantidadEquipos.length+" en la liga "+ ligaEncontrada.nombreLiga )
+                                //console.log("Existen>:"+ cantidadEquipos.length+" en la liga "+ ligaEncontrada.nombreLiga )
                                 if(cantidadEquipos.length<10){
-                                    console.log(ligaEncontrada._id)
-                                    Equipos.findByIdAndUpdate(idEqui, {parametros,idLiga:ligaEncontrada._id}, { new: true } ,(err, equipoActualizada) => {
-                                        if (err) return res.status(500).send({ mensaje: 'Error en la peticion'});
-                                        if(!equipoActualizada) return res.status(404).send( { mensaje: 'Error al editar el equipo'});
-                                
-                                        return res.status(200).send({mensaje:"EDICIÓN DEL EQUIPO EXITOSO", equipo: equipoActualizada});
-                                    });         
+ 
+                                    Equipos.findOne({ nombreEquipo : parametros.nombreEquipo, idLiga:equipoEncontrado.idLiga }, (err, equipoEditarNombre) => {
+                                        if(err||equipoEditarNombre) {
+                                            return res.status(404).send( { mensaje: 'Ya existe un equipo en la liga con este nombre. Verifique los datos (Utilice otro)'});
+
+                                        }else{
+                                            Equipos.findByIdAndUpdate(idEqui, parametros, { new: true } ,(err, equipoActualizada) => {
+                                                if (err) return res.status(500).send({ mensaje: 'Error en la peticion'});
+                                                if(!equipoActualizada) return res.status(404).send( { mensaje: 'Error al editar el equipo'});
+                                        
+                                                return res.status(200).send({mensaje:"EDICIÓN DEL EQUIPO EXITOSO", equipo: equipoActualizada});
+                                            });  
+                                        }
+  
+            
+                                    })
+
                                 }else{
                                     return res.status(500)
                                     .send({ mensaje: 'No puede agregar mas equipos a esta liga: '+ligaEncontrada.nombreLiga,informacion:'La cantidad máxima de equipos por liga es: 10'});                                
@@ -116,42 +125,8 @@ function EditarEquipos(req, res) {
                             .send({ mensaje: 'La liga no pertenece al usuario. Verifique el nombre' });
                         }
                     })
-                    if(parametros.nombreEquipo){//SI QUIERE CMABIAR EL NOMBRE DEL EQUIPO
+                  
 
-                        Equipos.findOne({ nombreEquipo : parametros.nombreEquipo, idLiga:equipoEncontrado.idLiga }, (err, equipoEditarNombre) => {
-                            if(err||equipoEditarNombre) return res.status(404).send( { mensaje: 'Ya existe un equipo en la liga con este nombre. Verifique los datos (Utilice otro)'});
-                            Equipos.findByIdAndUpdate(idEqui, parametros, { new: true } ,(err, equipoActualizada) => {
-                                if (err) return res.status(500).send({ mensaje: 'Error en la peticion'});
-                                if(!equipoActualizada) return res.status(404).send( { mensaje: 'Error al editar el equipo'});
-                        
-                                return res.status(200).send({mensaje:"EDICIÓN DEL EQUIPO EXITOSO", equipo: equipoActualizada});
-                            });    
-
-                        })
-                    }                      
-                }else{//SIN NO QUIERE CAMBIAR LA LIGA DEL
-                    if(parametros.nombreEquipo){//SI QUIERE CMABIAR EL NOMBRE DEL EQUIPO
-
-                        Equipos.findOne({ nombreEquipo : parametros.nombreEquipo, idLiga:equipoEncontrado.idLiga }, (err, equipoEditarNombre) => {
-                            if(err||equipoEditarNombre) return res.status(404).send( { mensaje: 'Ya existe un equipo en la liga con este nombre. Verifique los datos (Utilice otro)'});
-                            Equipos.findByIdAndUpdate(idEqui, parametros, { new: true } ,(err, equipoActualizada) => {
-                                if (err) return res.status(500).send({ mensaje: 'Error en la peticion'});
-                                if(!equipoActualizada) return res.status(404).send( { mensaje: 'Error al editar el equipo'});
-                        
-                                return res.status(200).send({mensaje:"EDICIÓN DEL EQUIPO EXITOSO", equipo: equipoActualizada});
-                            });    
-
-                        })
-                    }else{
-                        Equipos.findByIdAndUpdate(idEqui, parametros, { new: true } ,(err, equipoActualizada) => {
-                            if (err) return res.status(500).send({ mensaje: 'Error en la peticion'});
-                            if(!equipoActualizada) return res.status(404).send( { mensaje: 'Error al editar el equipo'});
-                    
-                            return res.status(200).send({mensaje:"EDICIÓN DEL EQUIPO EXITOSO", equipo: equipoActualizada});
-                        });   
-                    }
-
-                }
             }else{
                 return res.status(500).send({ mensaje: 'Solamente se puede editar el nombre del equipo, el entrenador y el nombre de la liga'});
             } 

@@ -8,7 +8,6 @@ const bcrypt = require("bcrypt-nodejs");
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/IN6BM2_TORNEO_DEPORTIVO_2017096',{useNewUrlParser:true,useUnifiedTopology:true}).then(()=>{
     console.log('Se encuentra conectado a la base de datos.');
-
     app.listen(3000,function(req, res){
         console.log('IN6BM, eL servidor esta corriendo correctamente (puerto 3000)');
         RegistrarAdministradorDefault();    

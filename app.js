@@ -11,8 +11,6 @@ const LigasRutas = require('./src/rutes/ligas.rutes');
 const EquiposRutas = require('./src/rutes/equipos.rutes');
 const JornadasRutas = require('./src/rutes/jornadas.rutes');
 
-
-
 // MIDDLEWARES -> iNTERMEDIARIOS
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -22,6 +20,5 @@ app.use(cors());
 
 // CARGA DE RUTAS localhost:3000/api/obtenerProductos
 app.use('/api', LigasRutas,UsuariosRutas,EquiposRutas,JornadasRutas);
-
 
 module.exports = app;

@@ -104,8 +104,8 @@ function RegistrarAdmin(req, res) {
        
        if(req.user.rol=="ROL_USUARIO"){
            //ELIMINAR PROPIA CUENTA
-           console.log(idUser)
-           console.log(req.user.sub)
+           //console.log(idUser)
+           //console.log(req.user.sub)
 
            if(idUser == req.user.sub){
                Usuarios.findByIdAndDelete({_id:req.user.sub},(err,usuarioEliminado)=>{
@@ -115,7 +115,7 @@ function RegistrarAdmin(req, res) {
                    return  res.status(200).send({mensaje:"ELIMINACION EXITOSA",usuario:usuarioEliminado});
                })
            }else{
-               return res.status(500).send({ mensaje: 'No puede eliminar otros clientes'});
+               return res.status(500).send({ mensaje: 'No puede eliminar otros usuarios'});
            }
            //ELIMINACION DEL ADMINITRADOR
        }else{
@@ -143,7 +143,7 @@ function ObtenerUsuarios (req, res) {
 
         for(let i=0; i <usuariosObtenidos.length;i++){
             usuariosObtenidos[i].password = undefined
-            console.log(usuariosObtenidos[i].nombre)
+            //console.log(usuariosObtenidos[i].nombre)
         }
 
 
@@ -221,7 +221,7 @@ function EditarPerfilUsuario(req, res) {
                         if(parametros.rol=="ROL_ADMINISTRADOR"){
                             Usuarios.findByIdAndUpdate(idUser, parametros, { new: true } ,(err, usuarioActualizado) => {
                                 if (err) return res.status(500).send({ mensaje: 'Error en la peticion'});
-                                if(!usuarioActualizado) return res.status(404).send( { mensaje: 'Error al editar cliente'});
+                                if(!usuarioActualizado) return res.status(404).send( { mensaje: 'Error al editar usuario'});
                     
                                 return res.status(200).send({ empresa: usuarioActualizado});
                             });
@@ -239,10 +239,10 @@ function EditarPerfilUsuario(req, res) {
                 }
 
             }else{//El CLiente solo puede editar perfil
-                console.log(usuarioBuscado._id)
+                //console.log(usuarioBuscado._id)
 
                 if(usuarioBuscado._id==req.user.sub){
-                    console.log(usuarioBuscado._id)
+                    //console.log(usuarioBuscado._id)
                     if(parametros.email || parametros.password|| parametros.email==""
                     || parametros.password==""||parametros.rol||parametros.rol==""){
                         return res.status(500)

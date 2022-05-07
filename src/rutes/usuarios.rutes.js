@@ -21,7 +21,7 @@ api.put('/editarUsuarios/:idUsuario',md_autentificacion.Auth, usuariosController
 
 
 //REGISTRAR USUARIO  ADMINISTRADOR
-api.post('/registrarAdministradores', md_autentificacion.Auth, usuariosController.RegistrarUsuario);
+api.post('/registrarAdministradores', md_autentificacion.Auth, usuariosController.RegistrarAdmin);
 
 //ELIMINAR USUARIO 
 api.delete('/eliminarUsuarios/:idUsuario',md_autentificacion.Auth,usuariosController.EliminarUsuarios)

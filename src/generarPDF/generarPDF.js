@@ -1,5 +1,4 @@
 //ALEJANDRO JAVIER GARCIA GARCIA -2017096 - PE6BM2
-
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
 const Ligas = require("../models/ligas.model");
